@@ -1,2 +1,2 @@
 # CodeSCE
-sce's interview platform
+sce's oa platform
