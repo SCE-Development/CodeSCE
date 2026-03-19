@@ -33,5 +33,6 @@ func main() {
 
 		api.POST("/attempts/:id/questions/:qid/submissions", handlers.CreateSubmission)
 		api.GET("/submissions/:id", handlers.GetSubmission)
+		api.POST("/attempts/:id/questions/:qid/run", handlers.RunCode)
 	r.Run(":6767")
 }

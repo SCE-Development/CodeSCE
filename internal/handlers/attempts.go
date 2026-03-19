@@ -39,3 +39,11 @@ func SubmitAttempt(c *gin.Context) {
 		"id":      c.Param("id"),
 	})
 }
+
+func RunCode(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"attempt_id":  c.Param("id"),
+		"question_id": c.Param("qid"),
+		"passed_test_cases": []int{},
+	})
+}
