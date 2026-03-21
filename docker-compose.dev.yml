@@ -1,0 +1,29 @@
+services:
+  database:
+    ports:
+      - "${DB_PORT:-5432}:5432"
+
+  backend:
+    build:
+      target: dev
+    environment:
+      GIN_MODE: debug
+    volumes:
+      - .:/app
+      - go-mod-cache:/go/pkg/mod
+    ports:
+      - "${BACKEND_PORT:-6767}:6767"
+
+  frontend:
+    build:
+      target: dev
+    environment:
+      VITE_API_URL: http://localhost:${BACKEND_PORT:-6767}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "${FRONTEND_PORT:-3000}:5173"
+
+volumes:
+  go-mod-cache:
