@@ -10,8 +10,6 @@ services:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    networks:
-      - codesce-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -32,8 +30,6 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    networks:
-      - codesce-network
 
   frontend:
     build:
@@ -46,12 +42,11 @@ services:
       - "${FRONTEND_PORT:-3000}:80"
     depends_on:
       - backend
-    networks:
-      - codesce-network
 
 volumes:
   pgdata:
 
 networks:
-  codesce-network:
-    driver: bridge
+  default:
+    external: true
+    name: sce
