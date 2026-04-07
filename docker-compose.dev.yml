@@ -1,0 +1,38 @@
+services:
+  database:
+    ports:
+      - "${DB_PORT:-5432}:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      GIN_MODE: debug
+      PORT: ${BACKEND_PORT:-6767}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?sslmode=disable
+    volumes:
+      - .:/app
+      - go-mod-cache:/go/pkg/mod
+    ports:
+      - "${BACKEND_PORT:-6767}:6767"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      VITE_API_URL: http://localhost:${BACKEND_PORT:-6767}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "${FRONTEND_PORT:-3000}:5173"
+    depends_on:
+      - backend
+
+volumes:
+  go-mod-cache:
