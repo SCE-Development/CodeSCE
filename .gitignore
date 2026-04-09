@@ -1,2 +1,5 @@
 .cursor/
 .env
+PLAN.md
+issues/
+.DS_Store
