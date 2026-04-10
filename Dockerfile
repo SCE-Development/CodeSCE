@@ -24,3 +24,12 @@ COPY --from=build /bin/server /bin/server
 EXPOSE 6767
 
 CMD ["/bin/server"]
+
+
+FROM python3.12-slim 
+
+WORKDIR /app
+
+# entrypoint lets us pipe stdin and returns stdout
+
+ENTRYPOINT ["python", "/code/solution.py"]

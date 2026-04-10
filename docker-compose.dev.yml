@@ -2,7 +2,27 @@ services:
   database:
     ports:
       - "${DB_PORT:-5432}:5432"
-
+  redis:
+    ports:
+      - "6379:6379"
+  executor:
+    # docker can only access files in /executor
+    build:
+      context: ./executor
+      dockerfile: Dockerfile.dev
+    environment:
+      REDIS_URL: ${REDIS_URL}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?sslmode=disable
+      WORKER_COUNT: ${WORKER_COUNT}
+      EXECUTION_TIMEOUT: ${EXECUTION_TIMEOUT}
+      SANDBOX_MEMORY_LIMIT: ${SANDBOX_MEMORY_LIMIT}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      redis:
+        condition: service_healthy
+      database:
+        condition: service_healthy
   backend:
     build:
       context: .
@@ -11,6 +31,7 @@ services:
       GIN_MODE: debug
       PORT: ${BACKEND_PORT:-6767}
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?sslmode=disable
+      REDIS_URL: ${REDIS_URL}
     volumes:
       - .:/app
       - go-mod-cache:/go/pkg/mod
