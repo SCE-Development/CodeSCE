@@ -12,7 +12,7 @@ services:
       retries: 5
   executor:
     build:
-      context: ./executor
+      context: .
       dockerfile: Dockerfile
     environment:
       REDIS_URL: ${REDIS_URL}

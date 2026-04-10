@@ -6,9 +6,8 @@ services:
     ports:
       - "6379:6379"
   executor:
-    # docker can only access files in /executor
     build:
-      context: ./executor
+      context: .
       dockerfile: Dockerfile.dev
     environment:
       REDIS_URL: ${REDIS_URL}
