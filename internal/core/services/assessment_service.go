@@ -2,6 +2,7 @@ package services
 
 import (
 	"CodeSCE/internal/core/models"
+	"CodeSCE/internal/core/repositories"
 	"context"
 	"errors"
 	"fmt"
@@ -22,23 +23,6 @@ func (e FieldError) Error() string {
 	return e.Field + ": " + e.Message
 }
 
-type AssessmentRepository interface {
-	Create(ctx context.Context, assessment *models.AssessmentTemplate) error
-	List(ctx context.Context) ([]models.AssessmentTemplate, error)
-	GetByID(ctx context.Context, id int64) (*models.AssessmentTemplate, error)
-}
-
-type QuestionRepository interface {
-	Create(ctx context.Context, question *models.Question) error
-	GetByID(ctx context.Context, id int64) (*models.Question, error)
-	ListByAssessmentID(ctx context.Context, assessmentID int64) ([]models.Question, error)
-}
-
-type TestCaseRepository interface {
-	CreateMany(ctx context.Context, questionID int64, testCases []models.TestCase) error
-	ListByQuestionID(ctx context.Context, questionID int64) ([]models.TestCase, error)
-}
-
 type QuestionWithTestCases struct {
 	models.Question
 	TestCases []models.TestCase `json:"testCases,omitempty"`
@@ -50,15 +34,15 @@ type AssessmentWithQuestions struct {
 }
 
 type AssessmentService struct {
-	assessmentRepo AssessmentRepository
-	questionRepo   QuestionRepository
-	testCaseRepo   TestCaseRepository
+	assessmentRepo repositories.AssessmentRepository
+	questionRepo   repositories.QuestionRepository
+	testCaseRepo   repositories.TestCaseRepository
 }
 
 func NewAssessmentService(
-	ar AssessmentRepository,
-	qr QuestionRepository,
-	tr TestCaseRepository,
+	ar repositories.AssessmentRepository,
+	qr repositories.QuestionRepository,
+	tr repositories.TestCaseRepository,
 ) *AssessmentService {
 	return &AssessmentService{
 		assessmentRepo: ar,
