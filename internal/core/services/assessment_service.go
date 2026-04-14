@@ -160,16 +160,16 @@ func validateQuestion(q *models.Question) error {
 
 func validateQuestionType(typ string) error {
 	switch typ {
-	case "mcq", "multi_select", "short_answer", "code":
+	case "mcq_single", "mcq_multi", "short_answer", "code":
 		return nil
 	default:
-		return FieldError{Field: "type", Message: "must be mcq, multi_select, short_answer, or code"}
+		return FieldError{Field: "type", Message: "must be mcq_single, mcq_multi, short_answer, or code"}
 	}
 }
 
 func questionTypeRequiresOptions(typ string) bool {
 	switch typ {
-	case "mcq", "multi_select":
+	case "mcq_single", "mcq_multi":
 		return true
 	default:
 		return false
