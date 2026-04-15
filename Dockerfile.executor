@@ -12,20 +12,22 @@ FROM golang:1.25-alpine AS build
 WORKDIR /app
 
 # copy two dependency files for main.go into ./ inside the container aka /app
-COPY cmd/runner/go.mod cmd/runner/go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download
 
 # copy source code (left) into image (right) 
-COPY cmd/runner/ .
+COPY . .
 
 # compiles code in /app into service called runner
-RUN go build -o runner .
+RUN go build -o runner ./cmd/runner
 
 # --- Production stage ---
 FROM alpine:3.20 AS production
 
 WORKDIR /app
 
-COPY --from=build /app/runner /app/runner
+COPY --from=build /app/runner/ docker/ /app/runner/
+
+EXPOSE 0
 
 CMD ["/app/runner"]
