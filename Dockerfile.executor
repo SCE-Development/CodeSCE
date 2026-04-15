@@ -28,6 +28,4 @@ WORKDIR /app
 
 COPY --from=build /app/runner/ docker/ /app/runner/
 
-EXPOSE 0
-
 CMD ["/app/runner"]
