@@ -1,0 +1,31 @@
+# typing everythig up manually: high cortisol
+# COPY AND PASTE FROM OTHER FILES: low cortisol
+
+# executor dockerfile (go) thinking monkey....
+
+# --- Build stage ---
+
+# go image with compiler, names it build
+FROM golang:1.25-alpine AS build
+
+# set working directory inside container
+WORKDIR /app
+
+# copy two dependency files for main.go into ./ inside the container aka /app
+COPY go.mod go.sum ./
+RUN go mod download
+
+# copy source code (left) into image (right) 
+COPY . .
+
+# compiles code in /app into service called runner
+RUN go build -o runner ./cmd/runner
+
+# --- Production stage ---
+FROM alpine:3.20 AS production
+
+WORKDIR /app
+
+COPY --from=build /app/runner/ docker/ /app/runner/
+
+CMD ["/app/runner"]
