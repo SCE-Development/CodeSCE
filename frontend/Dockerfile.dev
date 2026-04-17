@@ -1,15 +1,13 @@
 # Frontend Dev Dockerfile (React/Vite)
-
 FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY frontend/package.json .
 
+RUN npm cache clean --force
 RUN npm ci
 
-COPY . .
+COPY frontend/ .
 
-EXPOSE 5173
-
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "7777"]
