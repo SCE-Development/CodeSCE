@@ -1,4 +1,34 @@
 services:
+# each service is a container
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    # will return pong if up
+    healthcheck: 
+      test: ["CMD-SHELL", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  executor:
+    build:
+      context: .
+      dockerfile: Dockerfile.executor
+    environment:
+      REDIS_URL: ${REDIS_URL}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?sslmode=disable
+      WORKER_COUNT: ${WORKER_COUNT}
+      EXECUTION_TIMEOUT: ${EXECUTION_TIMEOUT}
+      SANDBOX_MEMORY_LIMIT: ${SANDBOX_MEMORY_LIMIT}
+    # executor allows us to run other containers
+    # left side is file from host, right side is file inside container
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      redis:
+        condition: service_healthy
+      database:
+        condition: service_healthy
   database:
     image: postgres:16-alpine
     container_name: codesce-db
@@ -25,6 +55,7 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?sslmode=disable
       GIN_MODE: ${GIN_MODE:-release}
       PORT: ${BACKEND_PORT:-6767}
+      REDIS_URL: ${REDIS_URL}
     ports:
       - "${BACKEND_PORT:-6767}:6767"
     depends_on:
