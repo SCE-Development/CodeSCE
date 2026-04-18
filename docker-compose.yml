@@ -68,7 +68,7 @@ services:
       dockerfile: Dockerfile
     container_name: codesce-frontend
     environment:
-      VITE_API_URL: ${VITE_API_URL:-http://backend:6767}
+      VITE_API_URL: ${VITE_API_URL:-http://backend:6766}
     ports:
       - "${FRONTEND_PORT:-3000}:80"
     depends_on:

@@ -1,0 +1,12 @@
+[build]
+# Build backend server binary from cmd/server
+cmd = "go build -o ./tmp/main ./cmd/server"
+entrypoint = ["./tmp/main"]
+
+# Watch Go and template/source files
+include_ext = ["go", "tpl", "tmpl", "html"]
+exclude_dir = ["tmp", "vendor", "frontend", ".git"]
+
+[misc]
+# Keep logs clean in dev containers
+clean_on_exit = true

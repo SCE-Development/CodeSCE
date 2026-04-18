@@ -3,11 +3,12 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY frontend/package.json .
+COPY frontend/package*.json .
 
-RUN npm cache clean --force
 RUN npm ci
 
 COPY frontend/ .
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "7777"]
+EXPOSE 6766
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "6766"]
