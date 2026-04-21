@@ -33,3 +33,23 @@ type TestCase struct {
 	IsHidden       bool   `json:"isHidden" db:"is_hidden"`
 	Score          int    `json:"score" db:"score"`
 }
+
+// code execution job from the Redis stream
+// shoutout goderpad/models/job.go for da code yo!
+type ExecuteJob struct {
+	JobID    string `json:"jobId"`
+	RoomID   string `json:"roomId"`
+	UserID   string `json:"userId"`
+	Code     string `json:"code"`
+	Language string `json:"language"`
+}
+
+// result of a code execution
+type ExecuteResult struct {
+	JobID  string `json:"jobId"`
+	RoomID string `json:"roomId"`
+	UserID string `json:"userId"`
+	Stdout string `json:"stdout"`
+	Stderr string `json:"stderr"`
+	Code   int    `json:"code"`
+}
