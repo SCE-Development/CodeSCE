@@ -1,42 +1,107 @@
-#root {
-  max-width: 1280px;
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.start-card {
+  width: 100%;
+  max-width: 360px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.assessment-page {
+  width: 100%;
+  max-width: none;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.assessment-container {
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.assessment-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0;
+  margin: 0.75rem 0;
+  min-height: calc(100vh - 6rem);
+}
+
+.question-section {
+  border-right: 1px solid #c7c7c7;
+  padding: 0.75rem;
+}
+
+.right-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.answer-section {
+  padding: 0.75rem;
+}
+
+.results-section {
+  border-top: 1px solid #c7c7c7;
+  padding: 0.75rem;
+}
+
+.results-section h2 {
+  margin-top: 0;
+}
+
+.answer-section textarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+}
+
+.start-card h1 {
+  margin-top: 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.form-row input {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+}
+
+.form-row button {
+  padding: 0.35rem 0.75rem;
+}
+
+.message {
+  margin: 0.5rem 0 0;
+}
+
+.error {
+  color: #b00020;
+}
+
+@media (max-width: 480px) {
+  .form-row {
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media (max-width: 800px) {
+  .assessment-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
   }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .question-section {
+    border-right: 0;
+    border-bottom: 1px solid #c7c7c7;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

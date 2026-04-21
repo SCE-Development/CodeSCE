@@ -1,11 +1,10 @@
-# Frontend Dockerfile (React/Vite)
-
-# --- Build stage ---
-FROM node:20-alpine AS build
+# Frontend Dockerfile
+# Build Stage
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package*.json .
 
 RUN npm ci
 
@@ -13,10 +12,10 @@ COPY . .
 
 RUN npm run build
 
-# --- Production stage ---
+# Production stage
 FROM nginx:alpine AS production
 
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 

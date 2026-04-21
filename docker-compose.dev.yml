@@ -45,12 +45,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     environment:
-      VITE_API_URL: http://localhost:${BACKEND_PORT:-6767}
+      VITE_API_URL: http://localhost:${BACKEND_PORT:-6766}
     volumes:
       - ./frontend:/app
       - /app/node_modules
     ports:
-      - "${FRONTEND_PORT:-3000}:5173"
+      - "${FRONTEND_PORT:-3000}:6766"
     depends_on:
       - backend
 
