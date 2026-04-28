@@ -7,6 +7,7 @@ import Home from './Home.tsx'
 import Assessment from './Assessment.tsx'
 import RecruiterLayout from './components/RecruiterLayout.tsx'
 import AssessmentsList from './pages/AssessmentsList.tsx'
+import AssessmentEditor from './pages/AssessmentEditor.tsx'
 
 const queryClient = new QueryClient()
 
@@ -19,7 +20,8 @@ const router = createBrowserRouter([
       { path: '/recruiter', element: <div>Dashboard</div> },
       { path: '/recruiter/candidates', element: <div>Candidates</div> },
       { path: '/assessments', element: <AssessmentsList /> },
-      { path: '/assessments/new', element: <div>Create Assessment</div> },
+      { path: '/assessments/new', element: <AssessmentEditor /> },
+      { path: '/assessments/:id', element: <AssessmentEditor /> },
     ],
   },
 ])
