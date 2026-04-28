@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '../api/client'
 import QuestionForm, { type QuestionPayload } from '../components/QuestionForm'
+import TestCaseManager, { type TestCase } from '../components/TestCaseManager'
 
 type Question = {
   id: number
@@ -10,6 +11,7 @@ type Question = {
   prompt: string
   score: number
   language?: string
+  testCases?: TestCase[]
 }
 
 type AssessmentDetail = {
@@ -258,6 +260,13 @@ function AssessmentEditor() {
                     {question.score} pts
                     {question.language ? ` · ${question.language}` : ''}
                   </p>
+                  {question.type === 'code' && assessmentId && (
+                    <TestCaseManager
+                      assessmentId={assessmentId}
+                      questionId={question.id}
+                      testCases={question.testCases ?? []}
+                    />
+                  )}
                 </li>
               ))}
             </ul>
