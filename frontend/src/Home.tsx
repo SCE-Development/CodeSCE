@@ -1,35 +1,50 @@
-import './App.css'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-type HomeProps = {
-    name: string
-    error: string
-    onNameChange: (name: string) => void
-    onStart: () => void
-}
+function Home() {
+  const navigate = useNavigate()
+  const [name, setName] = useState('')
+  const [error, setError] = useState('')
 
-function Home({ name, error, onNameChange, onStart }: HomeProps) {
-    return (
-        <main className="app-container">
-            <section className="start-card">
-                <h1>CodeSCE</h1>
+  const handleStart = () => {
+    const trimmedName = name.trim()
 
-                <div className="form-row">
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(event) => onNameChange(event.target.value)}
-                        placeholder="Name"
-                        aria-label="Name"
-                    />
-                    <button type="button" onClick={onStart}>
-                        Start
-                    </button>
-                </div>
+    if (!trimmedName) {
+      setError('Enter name')
+      return
+    }
 
-                {error && <p className="message error">{error}</p>}
-            </section>
-        </main>
-    )
+    setError('')
+    navigate('/assessment', { state: { name: trimmedName } })
+  }
+
+  return (
+    <main className="min-h-screen flex items-center justify-center p-4">
+      <section className="w-full max-w-sm text-center">
+        <h1 className="text-2xl font-semibold mb-4">CodeSCE</h1>
+
+        <div className="flex gap-2 justify-center">
+          <input
+            type="text"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="Name"
+            aria-label="Name"
+            className="flex-1 border border-gray-300 rounded-md px-2 py-1.5"
+          />
+          <button
+            type="button"
+            onClick={handleStart}
+            className="px-3 py-1.5 bg-gray-900 text-white rounded-md hover:bg-gray-800"
+          >
+            Start
+          </button>
+        </div>
+
+        {error && <p className="mt-2 text-red-700">{error}</p>}
+      </section>
+    </main>
+  )
 }
 
 export default Home
