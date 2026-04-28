@@ -12,9 +12,10 @@ import (
 )
 
 type Result struct {
-	Stdout string `json:"stdout"`
-	Stderr string `json:"stderr"`
-	Code   int    `json:"code"`
+	Stdout      string `json:"stdout"`
+	Stderr      string `json:"stderr"`
+	Code        int    `json:"code"`
+	ExecutionMS int64  `json:"execution_ms"`
 }
 
 func Run(ctx context.Context, language string, sourceCode string, stdin string) (*Result, error) {
@@ -64,8 +65,7 @@ func Run(ctx context.Context, language string, sourceCode string, stdin string) 
 		"--pids-limit=64",
 		"--tmpfs", "/tmp:rw,noexec,nosuid,size=64m",
 		"-v", fmt.Sprintf("%s:/code:ro", tempDir),
-		"python:3.12-slim",
-		"sh", "-c", "python /code/main.py",
+		"codesce-sandbox-python:latest",
 	}
 
 	// run da command and pipe stdin to container i think
@@ -78,15 +78,18 @@ func Run(ctx context.Context, language string, sourceCode string, stdin string) 
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
+	start := time.Now()
 	err = cmd.Run()
+	duration := time.Since(start).Milliseconds()
 
 	// do you know you have 10 seconds....
 	// 10? 10, 10, yes....
 	if ctx.Err() == context.DeadlineExceeded {
 		return &Result{
-			Stdout: stdout.String(),
-			Stderr: "execution timed out (" + timeoutStr + "s limit)",
-			Code:   -1,
+			Stdout:      stdout.String(),
+			Stderr:      "execution timed out (" + timeoutStr + " limit)",
+			Code:        -1,
+			ExecutionMS: duration,
 		}, nil
 	}
 
@@ -100,8 +103,9 @@ func Run(ctx context.Context, language string, sourceCode string, stdin string) 
 	}
 	// WHEN THE GO FILE FINALLY TURNS GREEN 🥹🥹🥹
 	return &Result{
-		Stdout: stdout.String(),
-		Stderr: stderr.String(),
-		Code:   exitCode,
+		Stdout:      stdout.String(),
+		Stderr:      stderr.String(),
+		Code:        exitCode,
+		ExecutionMS: duration,
 	}, nil
 }
