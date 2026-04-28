@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '../api/client'
+import QuestionForm, { type QuestionPayload } from '../components/QuestionForm'
 
 type Question = {
   id: number
@@ -38,6 +39,7 @@ function AssessmentEditor() {
   const [description, setDescription] = useState('')
   const [durationMinutes, setDurationMinutes] = useState('30')
   const [formError, setFormError] = useState('')
+  const [showQuestionForm, setShowQuestionForm] = useState(false)
 
   const detailQuery = useQuery<AssessmentDetail>({
     queryKey: ['assessment', assessmentId],
@@ -70,6 +72,18 @@ function AssessmentEditor() {
       queryClient.invalidateQueries({ queryKey: ['assessment', assessmentId] })
     },
   })
+
+  const addQuestionMutation = useMutation({
+    mutationFn: (payload: QuestionPayload) =>
+      apiClient.post<Question>(`/assessments/${assessmentId}/questions`, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['assessment', assessmentId] })
+      setShowQuestionForm(false)
+    },
+  })
+
+  const questionSubmitError =
+    addQuestionMutation.error instanceof Error ? addQuestionMutation.error.message : null
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -196,7 +210,36 @@ function AssessmentEditor() {
 
       {isEdit && detailQuery.data && (
         <section className="mt-10">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Questions</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-gray-900">Questions</h2>
+            {!showQuestionForm && (
+              <button
+                type="button"
+                onClick={() => {
+                  addQuestionMutation.reset()
+                  setShowQuestionForm(true)
+                }}
+                className="px-3 py-1.5 bg-gray-900 text-white rounded-md text-sm font-medium hover:bg-gray-800"
+              >
+                Add Question
+              </button>
+            )}
+          </div>
+
+          {showQuestionForm && (
+            <div className="mb-4">
+              <QuestionForm
+                onSubmit={(payload) => addQuestionMutation.mutate(payload)}
+                onCancel={() => {
+                  addQuestionMutation.reset()
+                  setShowQuestionForm(false)
+                }}
+                isSubmitting={addQuestionMutation.isPending}
+                submitError={questionSubmitError}
+              />
+            </div>
+          )}
+
           {detailQuery.data.questions.length === 0 ? (
             <p className="text-gray-500 text-sm">No questions added yet.</p>
           ) : (
