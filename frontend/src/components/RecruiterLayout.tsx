@@ -3,7 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 const navItems = [
   { to: '/recruiter', label: 'Dashboard', end: true },
   { to: '/recruiter/candidates', label: 'Candidates' },
-  { to: '/recruiter/assessments', label: 'Assessments' },
+  { to: '/assessments', label: 'Assessments' },
 ]
 
 function RecruiterLayout() {

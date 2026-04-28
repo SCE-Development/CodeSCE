@@ -6,6 +6,7 @@ import './index.css'
 import Home from './Home.tsx'
 import Assessment from './Assessment.tsx'
 import RecruiterLayout from './components/RecruiterLayout.tsx'
+import AssessmentsList from './pages/AssessmentsList.tsx'
 
 const queryClient = new QueryClient()
 
@@ -13,12 +14,12 @@ const router = createBrowserRouter([
   { path: '/', element: <Home /> },
   { path: '/assessment', element: <Assessment /> },
   {
-    path: '/recruiter',
     element: <RecruiterLayout />,
     children: [
-      { index: true, element: <div>Dashboard</div> },
-      { path: 'candidates', element: <div>Candidates</div> },
-      { path: 'assessments', element: <div>Assessments</div> },
+      { path: '/recruiter', element: <div>Dashboard</div> },
+      { path: '/recruiter/candidates', element: <div>Candidates</div> },
+      { path: '/assessments', element: <AssessmentsList /> },
+      { path: '/assessments/new', element: <div>Create Assessment</div> },
     ],
   },
 ])
