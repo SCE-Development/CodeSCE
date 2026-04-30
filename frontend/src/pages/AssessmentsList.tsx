@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { apiClient } from '../api/client'
+import { listAssessments } from '../api/client'
 
 type Assessment = {
   id: number
@@ -20,7 +20,7 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
 function AssessmentsList() {
   const { data, isLoading, isError, error } = useQuery<Assessment[]>({
     queryKey: ['assessments'],
-    queryFn: () => apiClient.get<Assessment[]>('/assessments'),
+    queryFn: () => listAssessments<Assessment[]>(),
   })
 
   return (

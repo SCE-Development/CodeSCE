@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { apiClient } from '../api/client'
+import {
+  addQuestion,
+  createAssessment,
+  getAssessment,
+  updateAssessment,
+} from '../api/client'
 import QuestionForm, { type QuestionPayload } from '../components/QuestionForm'
 import TestCaseManager, { type TestCase } from '../components/TestCaseManager'
 
@@ -45,7 +50,7 @@ function AssessmentEditor() {
 
   const detailQuery = useQuery<AssessmentDetail>({
     queryKey: ['assessment', assessmentId],
-    queryFn: () => apiClient.get<AssessmentDetail>(`/assessments/${assessmentId}`),
+    queryFn: () => getAssessment<AssessmentDetail>(assessmentId!),
     enabled: isEdit,
   })
 
@@ -59,7 +64,7 @@ function AssessmentEditor() {
 
   const createMutation = useMutation({
     mutationFn: (payload: AssessmentPayload) =>
-      apiClient.post<AssessmentDetail>('/assessments', payload),
+      createAssessment<AssessmentDetail>(payload),
     onSuccess: (created) => {
       queryClient.invalidateQueries({ queryKey: ['assessments'] })
       navigate(`/assessments/${created.id}`)
@@ -68,7 +73,7 @@ function AssessmentEditor() {
 
   const updateMutation = useMutation({
     mutationFn: (payload: AssessmentPayload) =>
-      apiClient.put<AssessmentDetail>(`/assessments/${assessmentId}`, payload),
+      updateAssessment<AssessmentDetail>(assessmentId!, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assessments'] })
       queryClient.invalidateQueries({ queryKey: ['assessment', assessmentId] })
@@ -77,7 +82,7 @@ function AssessmentEditor() {
 
   const addQuestionMutation = useMutation({
     mutationFn: (payload: QuestionPayload) =>
-      apiClient.post<Question>(`/assessments/${assessmentId}/questions`, payload),
+      addQuestion<Question>(assessmentId!, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assessment', assessmentId] })
       setShowQuestionForm(false)

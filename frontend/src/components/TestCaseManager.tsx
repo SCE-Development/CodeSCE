@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { apiClient } from '../api/client'
+import { addTestCases } from '../api/client'
 
 export type TestCase = {
   id: number
@@ -35,10 +35,9 @@ function TestCaseManager({ assessmentId, questionId, testCases }: TestCaseManage
 
   const addMutation = useMutation({
     mutationFn: (payload: TestCasePayload) =>
-      apiClient.post<{ testCases: TestCase[] }>(
-        `/assessments/${assessmentId}/questions/${questionId}/test-cases`,
-        { testCases: [payload] },
-      ),
+      addTestCases<{ testCases: TestCase[] }>(assessmentId, questionId, {
+        testCases: [payload],
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assessment', assessmentId] })
       setInput('')
