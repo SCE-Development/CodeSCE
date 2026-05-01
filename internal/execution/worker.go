@@ -136,7 +136,8 @@ func (w *Worker) handleJob(ctx context.Context, payload string) error {
 				finalStatus = "runtime_error"
 			}
 		} else {
-				passed = strings.TrimSpace(stdout) == strings.TrimSpace(tc.ExpectedOutput)			if exitCode != 0 {
+			passed = strings.TrimSpace(stdout) == strings.TrimSpace(tc.ExpectedOutput)			
+			if exitCode != 0 {
 				caseStatus = classifyStatus(stderr)
 				if finalStatus == "passed" {
 					finalStatus = caseStatus
